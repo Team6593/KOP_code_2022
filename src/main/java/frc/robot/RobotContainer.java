@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.drivetrain.DriveTrain_DefaultCommnad;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -35,6 +36,8 @@ public class RobotContainer {
     exampleSubsystem = new ExampleSubsystem();
     exampleCommand = new ExampleCommand();
     
+    driveTrain.setDefaultCommand(new DriveTrain_DefaultCommnad(driveTrain, xboxController));
+
     // Configure the button bindings
     configureButtonBindings();
   }
