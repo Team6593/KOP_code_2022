@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.drivetrain.DriveTrain_DefaultCommnad;
+import frc.robot.commands.drivetrain.TaxiWithGyro;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -57,6 +58,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return exampleCommand;
+    return new TaxiWithGyro(driveTrain, -.2).withTimeout(5); // taxi backwards for 5 seconds then stop
+    // might have to invert motorspeed to a negative
   }
 }

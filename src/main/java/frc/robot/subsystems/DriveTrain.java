@@ -4,6 +4,10 @@
 
 package frc.robot.subsystems;
 
+import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
@@ -27,11 +31,32 @@ public class DriveTrain extends SubsystemBase {
 
   private final DifferentialDrive Drive = new DifferentialDrive(DtLeft, DtRight);
 
+  private AHRS gyro; //import kauaiLabs_NavX_FRC vendor library
+
+  private double P = 0.0;// might have to change number later
+
+
   /** Creates a new DriveTrain. */
   public DriveTrain() {
-  
-
+  //NavX Gyro setup
+  try {
+    gyro = new AHRS(SPI.Port.kMXP);
+  } catch (RuntimeException rex) {
+    DriverStation.reportError("An error occured with NavX mxp, most likely and error with installing NavX - MansourQ" + rex.getMessage(), true);
   }
+
+}
+
+  public void driveStraight(double motorspeed) {
+    double err = -gyro.getAngle(); //target angle is zero
+    double turnSpeed = P * err;
+    Drive.arcadeDrive(motorspeed, turnSpeed);
+  }
+
+  public void resetGyro() {
+    gyro.reset();
+  }
+
 
   public void stopAllMotors() {
     DtLeft.stopMotor();
