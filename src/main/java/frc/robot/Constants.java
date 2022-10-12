@@ -20,6 +20,24 @@ public final class Constants {
     // MAKE SURE THE CLASSES ARE DECLARED STATIC
     // ALSO MAKE SURE TO IMPORT INNER-CLASSES STATICALLY
 
+    public final int XboxController_Port = 0;
+
+    public static final class InputMap {
+    
+        public static final class xBox{
+            public final int Abutton = 1;
+            public final int Bbutton = 2;
+            public final int Xbutton = 3;
+            public final int Ybutton = 4;
+            public final int LeftTrigger = 5;
+            public final int RightTrigger = 6;
+            public final int WindowButton = 7;
+            public final int MenuButton = 8;
+            public final int LeftButtonClick = 9;
+            public final int RightButtonClick = 10;
+        }
+    }
+
     public static final class Motors {
         // put motor ID's here
         // how to define consts: subsystem + master or slave + orientation (left, right, up, down) + "ID"
