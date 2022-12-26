@@ -1,1 +1,1 @@
-code for our prototype robot made using the KOP (Kit-Of-Parts)
+ONLY MASTER BRANCH IS STABLE AND PROD-READY
