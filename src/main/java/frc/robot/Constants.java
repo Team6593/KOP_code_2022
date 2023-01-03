@@ -21,6 +21,7 @@ public final class Constants {
     // ALSO MAKE SURE TO IMPORT INNER-CLASSES STATICALLY
 
     public final int XboxController_Port = 0;
+    public final double speedMultiplier = 1;
 
     public static final class InputMap {
     

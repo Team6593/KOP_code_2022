@@ -8,14 +8,17 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveTrain;
-
+/*
+ * Provides teleoperated driving with an xBox controller
+ */
 public class DriveTrain_DefaultCommnad extends CommandBase {
   /** Creates a new DriveTrain_DefultCommnad. */
   private DriveTrain driveTrain;
   private XboxController xboxController;
+  private double speedMultiplier;
 
-  public DriveTrain_DefaultCommnad(DriveTrain driveTrain, XboxController xboxController) {
-    
+  public DriveTrain_DefaultCommnad(DriveTrain driveTrain, XboxController xboxController, double speedMultiplier) {
+    this.speedMultiplier = speedMultiplier;
     this.xboxController = xboxController;
     this.driveTrain = driveTrain;
 
@@ -32,7 +35,7 @@ public class DriveTrain_DefaultCommnad extends CommandBase {
   @Override
   public void execute() {
     
-    driveTrain.arcadeDrive(xboxController.getRawAxis(1), xboxController.getRawAxis(4));
+    driveTrain.arcadeDrive(xboxController.getRawAxis(1) * speedMultiplier, xboxController.getRawAxis(4) * speedMultiplier);
     //driveTrain.arcadeDrive(xboxController.getRawAxis(1), xboxController.getRawAxis(4)); // for single-stick movement (left-stick)
   }
 

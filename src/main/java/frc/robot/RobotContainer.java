@@ -37,7 +37,7 @@ public class RobotContainer {
     exampleSubsystem = new ExampleSubsystem();
     exampleCommand = new ExampleCommand();
     
-    driveTrain.setDefaultCommand(new DriveTrain_DefaultCommnad(driveTrain, xboxController));
+    driveTrain.setDefaultCommand(new DriveTrain_DefaultCommnad(driveTrain, xboxController, constants.speedMultiplier));
 
     // Configure the button bindings
     configureButtonBindings();
