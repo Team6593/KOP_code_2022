@@ -42,10 +42,10 @@ public final class Constants {
         // put motor ID's here
         // how to define consts: subsystem + master or slave + orientation (left, right, up, down) + "ID"
         // change these nums later
-        public final int DT_MASTER_RIGHT_ID = 1;
-        public final int DT_MASTER_LEFT_ID = 2;
-        public final int DT_SLAVE_RIGHT_ID = 3;
-        public final int DT_SLAVE_LEFT_ID = 4;
+        public final int MasterRight = 1;
+        public final int MasterLeft = 2;
+        public final int SlaveRight = 3;
+        public final int SlaveLeft = 4;
         
     }
 
