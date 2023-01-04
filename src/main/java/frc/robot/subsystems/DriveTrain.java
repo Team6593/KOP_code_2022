@@ -21,10 +21,10 @@ public class DriveTrain extends SubsystemBase {
   public static Constants.Motors motors = new Constants.Motors();
 
   // We might not be using Sparks so this is subject to change
-  private Spark masterRight = new Spark(motors.DT_MASTER_RIGHT_ID);
-  private Spark masterLeft = new Spark(motors.DT_MASTER_LEFT_ID);
-  private Spark slaveLeft = new Spark(motors.DT_SLAVE_LEFT_ID);
-  private Spark slaveRight = new Spark(motors.DT_SLAVE_RIGHT_ID);
+  private Spark masterRight = new Spark(motors.MasterRight); // m right
+  private Spark masterLeft = new Spark(motors.MasterLeft); // m left
+  private Spark slaveLeft = new Spark(motors.SlaveLeft); // s left
+  private Spark slaveRight = new Spark(motors.SlaveRight); // s right
 
   private final MotorControllerGroup DtLeft = new MotorControllerGroup(masterLeft, slaveLeft);
   private final MotorControllerGroup DtRight = new MotorControllerGroup(masterRight, slaveRight);
