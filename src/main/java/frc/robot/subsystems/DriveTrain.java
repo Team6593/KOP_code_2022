@@ -47,6 +47,14 @@ public class DriveTrain extends SubsystemBase {
 
 }
 
+  public void setLeftMotorspeed(double leftmoterspeed) {
+    DtLeft.set(leftmoterspeed);
+  }
+
+  public void setRightMotorspeed(double rightmotorspeed) {
+    DtRight.set(rightmotorspeed);
+  }
+
   public void driveStraight(double motorspeed) {
     double err = -gyro.getAngle(); //target angle is zero
     double turnSpeed = P * err;
