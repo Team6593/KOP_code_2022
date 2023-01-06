@@ -1,1 +1,8 @@
-code for our prototype robot made using the KOP (Kit-Of-Parts)
+#Code for 2023 season
+
+## Current Subsystems
+### DriveTrain
+
+## Current Commands/Autonomous
+### Taxi-ing
+### Tele-operated Driving (with an xBox controlller)
