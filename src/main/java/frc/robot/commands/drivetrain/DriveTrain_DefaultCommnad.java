@@ -34,9 +34,6 @@ public class DriveTrain_DefaultCommnad extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // this is very cool
-    // tis is a change
-    // this is another change
     driveTrain.arcadeDrive(xboxController.getRawAxis(1) * speedMultiplier, xboxController.getRawAxis(4) * speedMultiplier);
     //driveTrain.arcadeDrive(xboxController.getRawAxis(1), xboxController.getRawAxis(4)); // for single-stick movement (left-stick)
   }
