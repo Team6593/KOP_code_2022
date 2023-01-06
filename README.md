@@ -1,8 +1,8 @@
-#Code for 2023 season
+# Code for 2023 season
 
 ## Current Subsystems
-### DriveTrain
+- DriveTrain
 
 ## Current Commands/Autonomous
-### Taxi-ing
-### Tele-operated Driving (with an xBox controlller)
+- Taxi-ing
+- Tele-operated Driving (with an xBox controlller)
