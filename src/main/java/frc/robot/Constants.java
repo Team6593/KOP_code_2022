@@ -22,6 +22,12 @@ public final class Constants {
 
     public final int XboxController_Port = 0;
 
+    public static final class CameraVision {
+        public final String cameraName = "camera";
+        public final int ViewportWidth = 640;
+        public final int ViewportHeight = 480;
+    }
+
     public static final class InputMap {
     
         public static final class xBox{

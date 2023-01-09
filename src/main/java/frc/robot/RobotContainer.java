@@ -11,6 +11,7 @@ import frc.robot.commands.drivetrain.DriveTrain_DefaultCommnad;
 import frc.robot.commands.drivetrain.TaxiWithGyro;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.vision.CamRIO;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /**
@@ -23,6 +24,9 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveTrain driveTrain;
 
+  // Make sure this is public so you can call camInit()
+  public final CamRIO rioCamera;
+
   private final ExampleCommand exampleCommand;
   private final ExampleSubsystem exampleSubsystem;
 
@@ -33,6 +37,7 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    rioCamera = new CamRIO();
     driveTrain = new DriveTrain();
     exampleSubsystem = new ExampleSubsystem();
     exampleCommand = new ExampleCommand();

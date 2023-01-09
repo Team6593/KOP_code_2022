@@ -1,0 +1,5 @@
+https://docs.wpilib.org/en/stable/docs/software/vision-processing/roborio/using-the-cameraserver-on-the-roborio.html#using-the-cameraserver-on-the-roborio
+
+In SmartDashboard program
+create a cameraserver stream viewer widget using the "View", then "Add" menu
+then "CameraServerStream"
