@@ -24,6 +24,7 @@ import frc.robot.Constants;
  * and more work is needed to implement features.
  * 
  * Try using lower resolutions to improve fps and RIO performance
+ * 16:9 resolutions are reccomended but other resolution ratios will work
  * 
  * This assumes that a camera, like a Logitech HD webcam
  * (or something like that), is connected via USB
@@ -55,7 +56,8 @@ public class CamRIO extends SubsystemBase {
 
         //set resolution/viewport
         //lower resolutions == more fps, better RIO perfromance
-        camera.setResolution(cameraVision.ViewportWidth, cameraVision.ViewportHeight);
+
+        camera.setResolution(640, 480);
 
         //get the CvSink, this caputres/records video
         CvSink cvSink = CameraServer.getVideo();
