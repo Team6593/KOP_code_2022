@@ -57,129 +57,99 @@ public class CamRIO extends SubsystemBase {
     //init visionThread
     visionThread = new Thread(
       () -> {
-        // Get the USB camera from CameraServer
-        UsbCamera camera = CameraServer.startAutomaticCapture();
+        var camera = CameraServer.startAutomaticCapture();
 
-        //set resolution/viewport
-        //lower resolutions == more fps, better RIO perfromance
+              var cameraWidth = 640;
+              var cameraHeight = 480;
 
-        camera.setResolution(640, 480);
+              camera.setResolution(cameraWidth, cameraHeight);
 
-        //get the CvSink, this caputres/records video
-        CvSink cvSink = CameraServer.getVideo();
+              var cvSink = CameraServer.getVideo();
+              var outputStream = CameraServer.putVideo("RioApriltags", cameraWidth, cameraHeight);
 
-        CvSource videoStream = CameraServer.putVideo("Logitech c270", 640, 480);
+              var mat = new Mat();
+              var grayMat = new Mat();
 
-        double fx = 0;
-        double fy = 0;
-        double cx = 0;
-        double cy = 0;
+              var pt0 = new Point();
+              var pt1 = new Point();
+              var pt2 = new Point();
+              var pt3 = new Point();
+              var center = new Point();
+              var red = new Scalar(0, 0, 255);
+              var green = new Scalar(0, 255, 0);
 
-        // We should re-use one mat instead of 2, beacuse mats are memory heavy
-        // 2 mats, one for regular images, one for grayscale (AprilTags)
-        Mat mat = new Mat();
-        Mat greymap = new Mat();
+              var aprilTagDetector = new AprilTagDetector();
 
-        // points
-        Point point1 = new Point();
-        Point point2 = new Point();
-        Point point3 = new Point();
-        Point point4 = new Point();
+              var config = aprilTagDetector.getConfig();
+              config.quadSigma = 0.8f;
+              aprilTagDetector.setConfig(config);
 
-        Point centerPoint = new Point();
+              var quadThreshParams = aprilTagDetector.getQuadThresholdParameters();
+              quadThreshParams.minClusterPixels = 250;
+              quadThreshParams.criticalAngle *= 5; // default is 10
+              quadThreshParams.maxLineFitMSE *= 1.5;
+              aprilTagDetector.setQuadThresholdParameters(quadThreshParams);
 
-        // for some dumb fucking reason, the Scalar values are Blue, Green, Red
-        // instead of the traditional Red, Green, Blue.
-        Scalar redScalar = new Scalar(0, 0, 255);
-        Scalar greenScalar = new Scalar(0, 255, 0);
+              aprilTagDetector.addFamily("tag16h5");
 
-        AprilTagDetector detector = new AprilTagDetector();
-        AprilTagDetector.Config config = detector.getConfig();
+              var timer = new Timer();
+              timer.start();
+              var count = 0;
 
-        detector.setConfig(config);
+              while (!Thread.interrupted()) {
+                if (cvSink.grabFrame(mat) == 0) {
+                  outputStream.notifyError(cvSink.getError());
+                  continue;
+                }
 
-        // wtf is a quad sigma?
-        config.quadSigma = 0.8f;
+                Imgproc.cvtColor(mat, grayMat, Imgproc.COLOR_RGB2GRAY);
 
-        QuadThresholdParameters quadThresholdParameters = detector.getQuadThresholdParameters();
+                var results = aprilTagDetector.detect(grayMat);
 
-        // these variables might need to change
-        // especially minClusterPixels
-        quadThresholdParameters.minClusterPixels = 250; // pixel size
-        quadThresholdParameters.criticalAngle *= 50; // default is 10
-        quadThresholdParameters.maxLineFitMSE *= 1.5;
-        detector.setQuadThresholdParameters(quadThresholdParameters);
-        detector.addFamily("tag16h5");
+                var set = new HashSet<>();
 
-        Timer timer = new Timer();
-        int count = 0;
+                for (var result: results) {
+                  count += 1;
+                  pt0.x = result.getCornerX(0);
+                  pt1.x = result.getCornerX(1);
+                  pt2.x = result.getCornerX(2);
+                  pt3.x = result.getCornerX(3);
 
-        while (!Thread.interrupted()) {
-          // tell sink to grab video frames from the camera and put it into the source mat
-          if (cvSink.grabFrame(mat) == 0) {
-            videoStream.notifyError("There was an error grabbing a frame from: ");
-            videoStream.notifyError(cameraVision.cameraName);
-            videoStream.notifyError(" sink err");
-            videoStream.notifyError(cvSink.getError());
-            continue;
-          }
+                  pt0.y = result.getCornerY(0);
+                  pt1.y = result.getCornerY(1);
+                  pt2.y = result.getCornerY(2);
+                  pt3.y = result.getCornerY(3);
 
-          // convert frame into grayscale
-          Imgproc.cvtColor(mat, greymap, Imgproc.COLOR_BGR2GRAY);
+                  center.x = result.getCenterX();
+                  center.y = result.getCenterY();
 
-          var results = detector.detect(greymap);
+                  set.add(result.getId());
 
-          HashSet hashSet = new HashSet<>();
+                  Imgproc.line(mat, pt0, pt1, red, 5);
+                  Imgproc.line(mat, pt1, pt2, red, 5);
+                  Imgproc.line(mat, pt2, pt3, red, 5);
+                  Imgproc.line(mat, pt3, pt0, red, 5);
 
-          for (var result : results) {
-            count += 1;
+                  Imgproc.circle(mat, center, 4, green);
+                  Imgproc.putText(mat, String.valueOf(result.getId()), pt2, Imgproc.FONT_HERSHEY_SIMPLEX, 2, green, 7);
 
-            // points that will be used to draw a square around the AprilTag
-            point1.x = result.getCornerX(0);
-            point2.x = result.getCornerX(1);
-            point3.x = result.getCornerX(2);
-            point4.x = result.getCornerX(3);
+                };
 
-            point1.y = result.getCornerY(0);
-            point2.y = result.getCornerY(1);
-            point3.y = result.getCornerY(2);
-            point4.y = result.getCornerY(3);
+                for (var id : set){
+                  System.out.println("Tag: " + String.valueOf(id));
+                }
 
-            centerPoint.x = result.getCenterX();
-            centerPoint.y = result.getCenterY();
+                if (timer.advanceIfElapsed(1.0)){
+                  System.out.println("detections per second: " + String.valueOf(count));
+                  count = 0;
+                }
 
-            hashSet.add(result.getId());
-
-            // draw a square around the apriltag
-            // this is a really fucking retarded way of drawing a square but it works
-            Imgproc.line(mat, point1, point2, redScalar, 5);
-            Imgproc.line(mat, point2, point3, redScalar, 5);
-            Imgproc.line(mat, point3, point4, redScalar, 5);
-            Imgproc.line(mat, point4, point1, redScalar, 5);
-
-            Imgproc.circle(mat, centerPoint, 4, greenScalar);
-            Imgproc.putText(mat, String.valueOf(result.getId()), point3, Imgproc.FONT_HERSHEY_SIMPLEX, 2, greenScalar, 7);
-
-
-          };
-
-          for (var id : hashSet) {
-            System.out.println("Tag: " + String.valueOf(id));
-          }
-
-          if (timer.advanceIfElapsed(1.0)) {
-            System.out.println("detections per second: " + String.valueOf(count));
-            count = 0;
-          }
-
-          videoStream.putFrame(mat);
-        }
-        
-        //detector.close();
-        
-      });
-      visionThread.setDaemon(true);
-      visionThread.start();
+                outputStream.putFrame(mat);
+              }
+              aprilTagDetector.close();
+            });
+    visionThread.setDaemon(true);
+    visionThread.start();
   }
 
   @Override
