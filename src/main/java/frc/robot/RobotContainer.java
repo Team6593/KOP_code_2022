@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.Utils.MemoryMonitor;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.drivetrain.DriveTrain_DefaultCommnad;
 import frc.robot.commands.drivetrain.TaxiWithGyro;
@@ -30,6 +31,8 @@ public class RobotContainer {
   private final ExampleCommand exampleCommand;
   private final ExampleSubsystem exampleSubsystem;
 
+  //Util classes
+  public final MemoryMonitor memoryMonitor;
 
   private Constants constants = new Constants();
   //IO
@@ -37,6 +40,7 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    memoryMonitor = new MemoryMonitor();
     rioCamera = new CamRIO();
     driveTrain = new DriveTrain();
     exampleSubsystem = new ExampleSubsystem();

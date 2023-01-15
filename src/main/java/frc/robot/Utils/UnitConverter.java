@@ -4,7 +4,7 @@
 
 package frc.robot.Utils;
 
-/** Add your docs here. */
+/** Unit conversion class, converts between radians, degrees and units */
 public class UnitConverter {
 
     /**
