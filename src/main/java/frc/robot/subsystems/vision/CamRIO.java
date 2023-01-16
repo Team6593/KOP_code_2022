@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems.vision;
 
-import java.io.Console;
 import java.util.HashSet;
 
 import org.opencv.core.Mat;
