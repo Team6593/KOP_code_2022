@@ -38,7 +38,7 @@ import frc.robot.Constants;
  */
 public class CamRIO extends SubsystemBase {
   /** Creates a new CamRIO. */
-  public CamRIO() {}
+  public CamRIO() {}// do not add any subsystem dependencies
 
   // set vision processing on another thread so it does not slow down the main thread
   Thread visionThread;
