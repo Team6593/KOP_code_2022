@@ -67,9 +67,11 @@ public class CamRIO extends SubsystemBase {
               var cvSink = CameraServer.getVideo();
               var outputStream = CameraServer.putVideo("RioApriltags", cameraWidth, cameraHeight);
 
+              // Mats are memory expensive, its better to re-use one but this is also ok
               var mat = new Mat();
               var grayMat = new Mat();
 
+              // points that will be used to draw square around tag
               var pt0 = new Point();
               var pt1 = new Point();
               var pt2 = new Point();
@@ -90,18 +92,23 @@ public class CamRIO extends SubsystemBase {
               quadThreshParams.maxLineFitMSE *= 1.5;
               aprilTagDetector.setQuadThresholdParameters(quadThreshParams);
 
+              // the AprilTag detector can only detect one family at a time
+              // to detect multiple tag fam's we must use multiple AprilTagDetectors
+              // this leads worse performance as AprilTagDetectors are expensive to setup
               aprilTagDetector.addFamily("tag16h5");
 
               var timer = new Timer();
               timer.start();
               var count = 0;
 
+              // this can never be true the robot must be off for this to be true
               while (!Thread.interrupted()) {
                 if (cvSink.grabFrame(mat) == 0) {
                   outputStream.notifyError(cvSink.getError());
                   continue;
                 }
-
+                
+                // convert image to grayscale
                 Imgproc.cvtColor(mat, grayMat, Imgproc.COLOR_RGB2GRAY);
 
                 var results = aprilTagDetector.detect(grayMat);
@@ -125,12 +132,15 @@ public class CamRIO extends SubsystemBase {
 
                   set.add(result.getId());
 
+                  // Imgproc doesn't have a square/rectangle member function
+                  // so we must use this awkward ass way of drawing squares around the tag
                   Imgproc.line(mat, pt0, pt1, red, 5);
                   Imgproc.line(mat, pt1, pt2, red, 5);
                   Imgproc.line(mat, pt2, pt3, red, 5);
                   Imgproc.line(mat, pt3, pt0, red, 5);
 
                   Imgproc.circle(mat, center, 4, green);
+                  // print id (number) of the tag
                   Imgproc.putText(mat, String.valueOf(result.getId()), pt2, Imgproc.FONT_HERSHEY_SIMPLEX, 2, green, 7);
 
                 };
@@ -146,8 +156,11 @@ public class CamRIO extends SubsystemBase {
 
                 outputStream.putFrame(mat);
               }
+              // if you do not close the detector, it will cause a memory leak
               aprilTagDetector.close();
             });
+    //TODO: create a handwritten protocol for syncing tag detection with autonomous driving
+    // (or just use a pre-existing one like NetworkTables)
     visionThread.setDaemon(true);
     visionThread.start();
   }
